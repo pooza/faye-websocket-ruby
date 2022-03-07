@@ -30,6 +30,7 @@ module Faye
         @hostname   = hostname
         @ssl_opts   = ssl_opts
         @cert_store = OpenSSL::X509::Store.new
+        @logger     = @ssl_opts[:logger]
 
         if root = @ssl_opts[:root_cert_file]
           [root].flatten.each { |ca_path| @cert_store.add_file(ca_path) }
@@ -45,7 +46,11 @@ module Faye
         return false unless certificate
 
         unless @cert_store.verify(certificate)
-          raise SSLError, "Unable to verify the server certificate for '#{ @hostname }'"
+          if @logger
+            logger.error("Unable to verify the server certificate for '#{ @hostname }'")
+          else
+            raise SSLError, "Unable to verify the server certificate for '#{ @hostname }'"
+          end
         end
 
         store_cert(certificate)
