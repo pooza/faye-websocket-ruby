@@ -19,9 +19,7 @@ module Faye
         proxy       = options.fetch(:proxy, {})
         @endpoint   = URI.parse(proxy[:origin] || @url)
         port        = @endpoint.port || DEFAULT_PORTS[@endpoint.scheme]
-        @logger     = options[:logger]
         @origin_tls = options.fetch(:tls, {})
-        @origin_tls[:logger] = @logger
         @socket_tls = proxy[:origin] ? proxy.fetch(:tls, {}) : @origin_tls
 
         configure_proxy(proxy)
@@ -69,7 +67,6 @@ module Faye
       end
 
       def on_network_error(error)
-        @logger&.error(error: error)
         emit_error("Network error: #{ @url }: #{ error.message }")
         finalize_close
       end
