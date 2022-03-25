@@ -31,6 +31,14 @@ module Faye
         on_network_error(error)
       end
 
+      def send(message)
+        message = message.to_json if message.is_a?(Hash)
+        if logger = @origin_tls[:logger]
+          logger.info(class: self.class.to_s, url: @url, op: message[:op])
+        end
+        return super
+      end
+
     private
 
       def configure_proxy(proxy)
