@@ -31,12 +31,12 @@ module Faye
         on_network_error(error)
       end
 
-      def send(message)
-        message = message.to_json if message.is_a?(Hash)
+      def send(payload)
+        json = message.to_json if payload.is_a?(Hash)
         if logger = @origin_tls[:logger]
-          logger.info(class: self.class.to_s, url: @url, op: message[:op])
+          logger.info(class: self.class.to_s, url: @url, op: payload[:op])
         end
-        return super
+        return super(json)
       end
 
     private
