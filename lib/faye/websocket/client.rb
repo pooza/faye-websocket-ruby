@@ -27,7 +27,7 @@ module Faye
         configure_proxy(proxy)
 
         EventMachine.connect(@endpoint.host, port, Connection) do |conn|
-          logger.info(class: self.class.to_s, method: __method__, url: url)
+          @logger.info(class: self.class.to_s, method: __method__, url: url)
           conn.parent = self
         end
       rescue => error
