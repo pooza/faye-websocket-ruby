@@ -32,7 +32,7 @@ module Faye
       end
 
       def send(payload)
-        json = message.to_json if payload.is_a?(Hash)
+        json = payload.to_json if payload.is_a?(Hash)
         if logger = @origin_tls[:logger]
           logger.info(class: self.class.to_s, url: @url, op: payload[:op])
         end
