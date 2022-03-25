@@ -47,7 +47,11 @@ module Faye
 
         unless @cert_store.verify(certificate)
           if @logger
-            @logger.error(error: "Unable to verify the server certificate for '#{ @hostname }'")
+            @logger.error(
+              class: self.class.to_s,
+              method: __method__,
+              error: "Unable to verify the server certificate for '#{ @hostname }'",
+            )
           else
             raise SSLError, "Unable to verify the server certificate for '#{ @hostname }'"
           end
