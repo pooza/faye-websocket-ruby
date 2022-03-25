@@ -16,10 +16,12 @@ module Faye
         @url = url
         super(options) { ::WebSocket::Driver.client(self, :max_length => options[:max_length], :protocols => protocols) }
 
+        @logger     = options[:logger]
         proxy       = options.fetch(:proxy, {})
         @endpoint   = URI.parse(proxy[:origin] || @url)
         port        = @endpoint.port || DEFAULT_PORTS[@endpoint.scheme]
         @origin_tls = options.fetch(:tls, {})
+        @origin_tls[:logger] ||= @logger
         @socket_tls = proxy[:origin] ? proxy.fetch(:tls, {}) : @origin_tls
 
         configure_proxy(proxy)
