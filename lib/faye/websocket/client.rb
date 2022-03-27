@@ -34,6 +34,7 @@ module Faye
       def send(payload)
         json = payload.to_json if payload.is_a?(Hash)
         if logger = @origin_tls&.dig(:logger)
+          payload[:op] ||= payload[:type]
           logger.info(class: self.class.to_s, url: @url, op: payload[:op])
         end
         return super(json)
