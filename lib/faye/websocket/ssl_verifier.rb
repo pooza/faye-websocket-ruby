@@ -43,28 +43,29 @@ module Faye
         return true unless should_verify?
 
         certificate = parse_cert(cert_text)
-        return false unless certificate
-
-        unless @cert_store.verify(certificate)
+        unless certificate
           if @logger
             @logger.error(
               class: self.class.to_s,
               method: __method__,
-              error: "Unable to verify the server certificate for '#{ @hostname }'",
+              error: "Unable to parse SSL certificate for '#{ @hostname }'",
             )
           else
-            raise SSLError, "Unable to verify the server certificate for '#{ @hostname }'"
+            raise SSLError, "Unable to parse SSL certificate for '#{ @hostname }'"
           end
         end
-
-        store_cert(certificate)
         @last_cert = certificate
-
+        @last_cert_verified = @cert_store.verify(certificate)
+        store_cert(certificate) if @last_cert_verified
         true
       end
 
       def ssl_handshake_completed
         return unless should_verify?
+
+        unless @last_cert_verified
+          raise SSLError, "Unable to verify the server certificate for '#{ @hostname }'"
+        end
 
         unless identity_verified?
           raise SSLError, "Host '#{ @hostname }' does not match the server certificate"
