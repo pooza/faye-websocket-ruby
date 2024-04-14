@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name     = 'faye-websocket'
-  s.version  = '0.11.2'
+  s.version  = '0.11.3'
   s.summary  = 'Standards-compliant WebSocket server and client'
   s.author   = 'James Coglan'
   s.email    = 'jcoglan@gmail.com'
@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'permessage_deflate'
   s.add_development_dependency 'progressbar'
-  s.add_development_dependency 'puma', '>= 2.0.0'
+  s.add_development_dependency 'puma', '>= 2.0.0', '< 6.0'
   s.add_development_dependency 'rack'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rspec-eventmachine', '>= 0.2.0'
