@@ -1,11 +1,13 @@
 Gem::Specification.new do |s|
   s.name     = 'faye-websocket'
-  s.version  = '0.11.3'
+  s.version  = '0.12.0'
   s.summary  = 'Standards-compliant WebSocket server and client'
   s.author   = 'James Coglan'
   s.email    = 'jcoglan@gmail.com'
   s.homepage = 'https://github.com/faye/faye-websocket-ruby'
   s.license  = 'Apache-2.0'
+
+  s.metadata['changelog_uri'] = s.homepage + '/blob/main/CHANGELOG.md'
 
   s.extra_rdoc_files = %w[README.md]
   s.rdoc_options     = %w[--main README.md --markup markdown]
@@ -14,12 +16,12 @@ Gem::Specification.new do |s|
   s.files = %w[CHANGELOG.md LICENSE.md README.md] + Dir.glob('lib/**/*.rb')
 
   s.add_dependency 'eventmachine', '>= 0.12.0'
-  s.add_dependency 'websocket-driver', '>= 0.5.1'
+  s.add_dependency 'websocket-driver', '>= 0.8.0'
 
   s.add_development_dependency 'permessage_deflate'
   s.add_development_dependency 'progressbar'
   s.add_development_dependency 'puma', '>= 2.0.0', '< 6.0'
-  s.add_development_dependency 'rack'
+  s.add_development_dependency 'rack', '< 3'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rspec-eventmachine', '>= 0.2.0'
 
@@ -30,7 +32,9 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'public_suffix', '< 1.5.0'
   end
 
-  unless jruby
+  if jruby
+    s.add_development_dependency 'http_parser.rb', '~> 0.6.0'
+  else
     thin_version = (RUBY_VERSION < '2.0.0') ? '< 1.8.0' : '> 0'
     s.add_development_dependency 'thin', '>= 1.2.0', thin_version
 

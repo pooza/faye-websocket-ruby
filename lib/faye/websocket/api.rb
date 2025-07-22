@@ -22,7 +22,9 @@ module Faye
       def initialize(options = {})
         @ready_state = CONNECTING
         super()
-        ::WebSocket::Driver.validate_options(options, [:headers, :extensions, :max_length, :ping, :proxy, :tls])
+        ::WebSocket::Driver.validate_options(options, [
+          :headers, :extensions, :max_length, :ping, :proxy, :tls, :binary_data_format
+        ])
 
         @driver = yield
 
@@ -63,11 +65,20 @@ module Faye
 
       def send(message)
         return false if @ready_state > OPEN
+
         case message
-          when Numeric then @driver.text(message.to_s)
-          when String  then @driver.text(message)
-          when Array   then @driver.binary(message)
-          else false
+          when Numeric then
+            @driver.text(message.to_s)
+          when String then
+            if message.encoding == Encoding::BINARY
+              @driver.binary(message)
+            else
+              @driver.text(message)
+            end
+          when Array then
+            @driver.binary(message)
+          else
+            false
         end
       end
 
